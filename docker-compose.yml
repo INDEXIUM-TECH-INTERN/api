@@ -1,0 +1,39 @@
+# Phiên bản cú pháp docker-compose
+version: "3.8"
+
+services:
+  api:
+    # Build container này từ Dockerfile ở thư mục hiện tại
+    build: .
+    container_name: gin-api
+    ports:
+    # Port máy bạn : Port trong container
+      - "8080:8080"
+    # Giới hạn ram API
+    mem_limit: 2g
+    cpus: "2.0"
+    restart: always
+    # Tránh lỗi: API start -> DB chưa chạy -> connect fail
+    depends_on:
+      - mysql
+
+  mysql:
+    # Dùng image MySQL có sẵn trên Docker Hub, Không cần tự cài MySQL
+    image: mysql:8.0
+    container_name: mysql-db
+    mem_limit: 2g
+    cpus: "2.0"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: article_db
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: AppPass123!
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+    - "3307:3306"
+
+volumes:
+  mysql_data:

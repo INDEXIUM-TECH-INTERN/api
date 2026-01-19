@@ -1,0 +1,12 @@
+USE article_db;
+
+CREATE TABLE posts (
+  id INT NOT NULL AUTO_INCREMENT,
+  title VARCHAR(50) NOT NULL,
+  content TEXT NOT NULL,
+  status ENUM('draft', 'published', 'archived') NOT NULL DEFAULT 'draft',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  thumbnail VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+);
