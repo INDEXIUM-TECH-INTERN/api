@@ -1,28 +1,47 @@
-# Phiên bản cú pháp docker-compose
-version: "3.8"
-
 services:
-  api:
-    # Build container này từ Dockerfile ở thư mục hiện tại
+  api-cache:
     build: .
-    container_name: gin-api
+    container_name: gin-api-cache
     ports:
-    # Port máy bạn : Port trong container
       - "8080:8080"
-    # Giới hạn ram API
-    mem_limit: 2g
-    cpus: "2.0"
+    mem_limit: 16g
+    cpus: "16.0"
     restart: always
-    # Tránh lỗi: API start -> DB chưa chạy -> connect fail
     depends_on:
       - mysql
+      - redis
+    environment:
+      - DB_HOST=host.docker.internal
+      - DB_PORT=3306
+      - DB_USER=appuser
+      - DB_PASSWORD=AppPass123!
+      - DB_NAME=article_db
+      - REDIS_ADDR=redis:6379
+      # - REDIS_ADDR=""
+
+  api-nocache:
+    build: .
+    container_name: gin-api-nocache
+    ports:
+      - "8081:8080"
+    mem_limit: 16g
+    cpus: "16.0"
+    restart: always
+    depends_on:
+      - mysql
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=appuser
+      - DB_PASSWORD=AppPass123!
+      - DB_NAME=article_db
+      - REDIS_ADDR=""
 
   mysql:
-    # Dùng image MySQL có sẵn trên Docker Hub, Không cần tự cài MySQL
     image: mysql:8.0
     container_name: mysql-db
-    mem_limit: 2g
-    cpus: "2.0"
+    mem_limit: 16g
+    cpus: "16.0"
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -33,7 +52,16 @@ services:
       - mysql_data:/var/lib/mysql
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-    - "3307:3306"
+      - "3307:3306"
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis-cache
+    mem_limit: 16g
+    cpus: "16.0"
+    restart: always
+    ports:
+      - "6379:6379"
 
 volumes:
   mysql_data:

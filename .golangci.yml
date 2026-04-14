@@ -1,0 +1,61 @@
+# GolangCI-Lint configuration (schema v2)
+# Note: the official .golangci.reference.yml is NOT a working example config; it's only a reference
+# of all available options and sample values. See docs.
+
+version: "2"
+
+run:
+  # Keep lint runs bounded (useful in CI and editors).
+  timeout: 5m
+
+  # IMPORTANT for editor integrations (incl. VS Code):
+  # In golangci-lint v2, paths are relative to the config file by default.
+  # Setting this to "wd" makes paths relative to the working directory.
+  relative-path-mode: wd
+
+  # Also lint *_test.go files.
+  tests: true
+
+output:
+  # Human-friendly output in terminal/CI logs.
+  # v2 expects a MAP (not a list). "colored-line-number" from v1 is now "text" + colors.
+  # See migration guide.
+  formats:
+    text:
+      path: stdout
+      colors: true
+
+linters:
+  # Default linter set.
+  # Options: standard | all | none | fast
+  default: standard
+
+  # Add a few useful extra linters (kept conservative for compatibility).
+  enable:
+    - gocritic
+    - gosec
+    - misspell
+    - revive
+
+  # Disable noisy linters (optional). Uncomment if you want them off.
+  # disable:
+  #   - lll
+
+  # Reduce false positives/noise in tests.
+  exclusions:
+    rules:
+      - path: _test\.go
+        linters:
+          - gosec
+          - gocritic
+
+formatters:
+  # In v2, gofmt/goimports/gofumpt/gci moved from "linters" to "formatters".
+  enable:
+    - gofmt
+    - goimports
+
+issues:
+  # 0 = unlimited (avoid truncating results).
+  max-issues-per-linter: 0
+  max-same-issues: 0

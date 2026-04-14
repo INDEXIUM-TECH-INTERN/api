@@ -10,6 +10,7 @@ type Config struct {
 	Server   ServerConfig   `mapstructure:"server"`
 	Database DatabaseConfig `mapstructure:"database"`
 	CORS     CORSConfig     `mapstructure:"cors"`
+	Redis    RedisConfig    `mapstructure:"redis"`
 }
 
 type ServerConfig struct {
@@ -27,6 +28,10 @@ type DatabaseConfig struct {
 	Charset   string `mapstructure:"charset"`
 	ParseTime bool   `mapstructure:"parse_time"`
 	Loc       string `mapstructure:"loc"`
+}
+
+type RedisConfig struct {
+	Address string `mapstructure:"addr"`
 }
 
 type CORSConfig struct {

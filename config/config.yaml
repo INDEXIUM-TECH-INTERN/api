@@ -8,7 +8,7 @@ server:
 
 database:
   driver: mysql
-  host: mysql
+  host: host.docker.internal
   port: 3306
   name: article_db
   user: appuser
@@ -30,3 +30,6 @@ cors:
     - Content-Type
     - Authorization
     - ngrok-skip-browser-warning
+
+redis:
+  addr: "redis-cache:6379"
